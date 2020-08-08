@@ -6,7 +6,7 @@ Following should be up and running already
 1. Docker
 2. Kubernetes
 
-##Configuration
+## Configuration
 Change replicas and ZOO_SERVERS values, as per your requirement currently its configured as 3
 
 ## Command

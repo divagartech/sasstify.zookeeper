@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.example</groupId>
+  <artifactId>sasstify.zookeeper</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>sasstify.zookeeper</name>
+  <url>INTERNAL</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.30.0</version>
+        <configuration>
+          <dockerHost>http://localhost:2375</dockerHost>
+          <skip>false</skip>
+          <buildArgs>
+            <artifact_id>${project.artifactId}</artifact_id>
+            <version>${project.version}</version>
+          </buildArgs>
+          <images>
+            <image>
+              <name>sasstify/${project.artifactId}:${project.version}</name>
+              <build>
+                <assembly combine.self="override"></assembly>
+                <dockerFileDir>${project.basedir}/src/main/docker/</dockerFileDir>
+              </build>
+              <run>
+                <skip>true</skip>
+              </run>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

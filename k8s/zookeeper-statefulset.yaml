@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zk
+spec:
+  selector:
+    matchLabels:
+      component: zk
+  serviceName: zk-hs
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        component: zk
+    spec:
+      containers:
+      - name: sasstify-zookeeper
+        image: sasstify/sasstify.zookeeper:1.0-SNAPSHOT
+        env:
+          - name: ZOO_SERVERS
+            value: '3'
+          - name: ZOO_TICK_TIME
+            value: '2000'
+          - name: ZOO_INIT_LIMIT
+            value: '10'
+          - name: ZOO_SYNC_LIMIT
+            value: '5'
+          - name: ZOO_HEAP
+            value: '512M'
+          - name: ZOO_MAX_CLIENT_CNXNS
+            value: '60'
+          - name: ZOO_SNAP_RETAIN_COUNT
+            value: '3'
+          - name: ZOO_PURGE_INTERVAL
+            value: '12'
+          - name: ZOO_MAX_SESSION_TIMEOUT
+            value: '40000'
+          - name: ZOO_MIN_SESSION_TIMEOUT
+            value: '4000'
+          - name: ZOO_LOG_LEVEL
+            value: INFO
+        ports:
+          - containerPort: 2181
+            name: client
+          - containerPort: 2888
+            name: server
+          - containerPort: 3888
+            name: leader-election
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/sasstify/zookeeper-3.6.1/lib/zookeeper
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

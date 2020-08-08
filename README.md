@@ -15,6 +15,6 @@ Change replicas and ZOO_SERVERS values, as per your requirement currently its co
 
 ## Command for Debugging and exploring
 1. For checking running pods - kubectl get pods 
-2. For logging into shell - kubectl exec -it <POD-NAME> bash
-3. For checking pod logs - kubectl logs -f <POD-NAME>
+2. For logging into shell - kubectl exec -it POD-NAME bash
+3. For checking pod logs - kubectl logs -f POD-NAME
 

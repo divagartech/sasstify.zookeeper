@@ -7,7 +7,7 @@ spec:
     matchLabels:
       component: zk
   serviceName: zk-hs
-  replicas: 3
+  replicas: 1
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: OrderedReady
@@ -20,8 +20,8 @@ spec:
       - name: sasstify-zookeeper
         image: sasstify/sasstify.zookeeper:1.0-SNAPSHOT
         env:
-          - name: ZOO_SERVERS
-            value: '3'
+          - name: SERVERS
+            value: '1'
           - name: ZOO_TICK_TIME
             value: '2000'
           - name: ZOO_INIT_LIMIT
@@ -41,7 +41,18 @@ spec:
           - name: ZOO_MIN_SESSION_TIMEOUT
             value: '4000'
           - name: ZOO_LOG_LEVEL
-            value: INFO
+            value: 'INFO'
+          - name: ZOO_ENABLE_AUTH
+            value: 'yes'
+          - name: ZOO_SERVER_USERS
+            value: 'sasstify'
+          - name: ZOO_SERVER_PASSWORDS
+            value: 'sasstify'
+          - name: ZOO_CLIENT_USER
+            value: 'sasstify'
+          - name: ZOO_CLIENT_PASSWORD
+            value: 'sasstify'
+          #  TLS implementation is not done yet, it depends on centralizer artifact management component
         ports:
           - containerPort: 2181
             name: client
@@ -49,12 +60,15 @@ spec:
             name: server
           - containerPort: 3888
             name: leader-election
+        livenessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - /opt/sasstify/scripts/zookeeper/zookeeper-ready.sh
         volumeMounts:
         - name: datadir
-          mountPath: /var/sasstify/zookeeper-3.6.1/lib/zookeeper
-      securityContext:
-        runAsUser: 0
-        runAsGroup: 0
+          mountPath: /var/sasstify/zookeeper/
   volumeClaimTemplates:
   - metadata:
       name: datadir
